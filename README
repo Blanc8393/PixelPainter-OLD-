@@ -1,0 +1,14 @@
+Hello! This tool will convert any image you choose into a minecraft-style painting. This is intended for use with the [ImageMaps](https://dev.bukkit.org/projects/imagemaps) plugin.
+
+~~Notes~~
+* Cropping images into standard ratios beforehand improves image results
+
+
+~~Instructions~~
+1. Create an "Input" and "Output" folder within the same directory as this program
+2. Fill "Input" folder with files you'd like to convert
+3. Run program
+  3.1. When prompted, enter dimensions of current image or enter "s" to skip to next image
+  3.2. Converted image will be sent to Output folder with a "MCPaint_" prefix
+  3.3. Repeat for all images
+4. Inspect results, upload to your MC server!
