@@ -1,18 +1,27 @@
 import os
 from PIL import Image
 
-directory = "Input"
-
-def FileExists(filename):
+def CreateFolders():
     try:
-        Image.open(filename)
+        os.mkdir("Input")
+    except FileExistsError:
+        pass
+
+    try:
+        os.mkdir("Output")
+    except FileExistsError:
+        pass
+
+def ImageExists(filename):
+    try:
+        img = Image.open("Input/" + filename)
         return True
-    except:
-        print("Invalid file name, please enter a valid file.\n")
+    except IOError:
+        print(f"\n{filename} is an invalid image.\n")
         return False
 
 def GetBlockDimensions(filename):
-    userInput = input(f"Enter block dimensions for {filename} (w h) or \"s\" to skip:\n")
+    userInput = input(f"Enter block dimensions for {filename} (w h) or \"s\" to skip: ")
     if(userInput[0] == 's'):
         return 's'
     while(len(userInput) != 3):
@@ -30,18 +39,20 @@ def ConvertToPainting(dimensions, input):
     image.save("Output/PXLPNT_" + noExt + ".png")
 
 def SingleImage(filename):
-    if(FileExists(filename)):
+    if(ImageExists(filename)):
         dimensions = GetBlockDimensions()
         image = Image.open(filename)
         ConvertToPainting(dimensions, image)
 
 def MultipleImages():
-    for file in os.listdir(directory):
-        dimensions = GetBlockDimensions(file)
-        ConvertToPainting(dimensions, file)
+    for file in os.listdir("Input"):
+        if(ImageExists(file)):
+            dimensions = GetBlockDimensions(file)
+            ConvertToPainting(dimensions, file)
 
 def main():
-    modePrompt = input("Single File (s) or Multiple Files (m)?\n")
+    CreateFolders()
+    modePrompt = input("Single File (s) or Multiple Files (m)? ")
     if(modePrompt == 's'):
         filename = input("Image name in Input folder:\n")
         SingleImage(filename)
