@@ -84,8 +84,10 @@ def SetOutput():
     return
 
 #Get desired dimensions (in blocks) of final painting
-def GetBlockDimensions(filename):
+def GetBlockDimensions(path):
+    filename = os.path.basename(path)
     userInput = input(f"Enter block dimensions for {filename} (w h) or \"s\" to skip: ") #filename is ugly
+
     if(userInput[0] == 's'):
         return 's'
     while(len(userInput) != 3):
@@ -95,7 +97,10 @@ def GetBlockDimensions(filename):
 
 #dimensions is a tuple, input should be an image
 #PROBLEM IS HERE
-def ImageToPainting(dimensions, image):
+def ImageToPainting(dimensions, file):
+    filename = os.path.basename(file)
+    noExt = filename.partition(".")[0]
+    image = Image.open(file)
     width = int(dimensions[0]) * 16
     height = int(dimensions[1]) * 16
     painting = image.resize((width, height), Image.Resampling.BILINEAR)
@@ -103,10 +108,9 @@ def ImageToPainting(dimensions, image):
 
     if(NAME_EACH == True):
         newName = input("Enter new name for \"" + image.filename + "\", excluding file extensions: ")
-        image.save(OUTPUT_FOLDER + "PXLPNT_" + newName + ".png")
+        painting.save(OUTPUT_FOLDER + "/PXLPNT_" + newName + ".png")
         return
-    noExt = image.filename.partition(".")[0]
-    image.save(OUTPUT_FOLDER + "PXLPNT_" + noExt + ".png")
+    painting.save(OUTPUT_FOLDER + "/PXLPNT_" + noExt + ".png")
 
 def ConvertAndSave():
     global IS_FOLDER
@@ -117,19 +121,18 @@ def ConvertAndSave():
     if(IS_FOLDER):
         for file in os.listdir(INPUT_FOLDER):
             dimensions = GetBlockDimensions(file.filename)
-            image = Image.open(file)
             if(dimensions != 's'):
-                ImageToPainting(dimensions, image)
+                ImageToPainting(dimensions, file)
     else:
+        file = INPUT_IMAGE
         dimensions = GetBlockDimensions(INPUT_IMAGE)
-        image = Image.open(INPUT_IMAGE)
         if(dimensions != 's'):
-                ImageToPainting(dimensions, image)
+                ImageToPainting(dimensions, file)
 
 def main():
     SetIsFolder()
-    SetOutput()
     SetInput()
+    SetOutput()
     SetNameEach()
     ConvertAndSave()
         
