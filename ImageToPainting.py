@@ -39,6 +39,7 @@ def SetNameEach():
     selection = input("Would you like to rename your image(s)?\ny/n: ")
     
     while(True):
+        
         if(selection == 'y'):
             NAME_EACH = True
             return
@@ -46,7 +47,7 @@ def SetNameEach():
             NAME_EACH = False
             return
         else:
-            print("Please enter 'y' or 'n'")
+            selection = input("Please enter 'y' or 'n': ")
 
 def ValidateImage():
     try:
@@ -86,7 +87,7 @@ def SetOutput():
 #Get desired dimensions (in blocks) of final painting
 def GetBlockDimensions(path):
     filename = os.path.basename(path)
-    userInput = input(f"Enter block dimensions for {filename} (w h) or \"s\" to skip: ") #filename is ugly
+    userInput = input(f"Enter block dimensions for {filename} (w h) or \"s\" to skip: ")
 
     if(userInput[0] == 's'):
         return 's'
@@ -95,8 +96,6 @@ def GetBlockDimensions(path):
         userInput = input("Only 2 arguments allowed. Enter width and height (w h)\n")
     return userInput.split()
 
-#dimensions is a tuple, input should be an image
-#PROBLEM IS HERE
 def ImageToPainting(dimensions, file):
     filename = os.path.basename(file)
     noExt = filename.partition(".")[0]
@@ -107,7 +106,7 @@ def ImageToPainting(dimensions, file):
     painting = painting.resize((width * 8, height * 8), Image.Resampling.NEAREST)
 
     if(NAME_EACH == True):
-        newName = input("Enter new name for \"" + image.filename + "\", excluding file extensions: ")
+        newName = input("Enter new name for \"" + filename + "\", excluding file extensions: ")
         painting.save(OUTPUT_FOLDER + "/PXLPNT_" + newName + ".png")
         return
     painting.save(OUTPUT_FOLDER + "/PXLPNT_" + noExt + ".png")
@@ -120,9 +119,9 @@ def ConvertAndSave():
 
     if(IS_FOLDER):
         for file in os.listdir(INPUT_FOLDER):
-            dimensions = GetBlockDimensions(file.filename)
+            dimensions = GetBlockDimensions(file)
             if(dimensions != 's'):
-                ImageToPainting(dimensions, file)
+                ImageToPainting(dimensions, INPUT_FOLDER + "/" + file)
     else:
         file = INPUT_IMAGE
         dimensions = GetBlockDimensions(INPUT_IMAGE)
